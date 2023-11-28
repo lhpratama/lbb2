@@ -13,7 +13,7 @@ output:
     df_print: paged
 ---
 
-# 1. INTRODUCTION
+# Introduction
 
 ```{r}
 library(knitr)
@@ -23,27 +23,27 @@ library(knitr)
 knitr::include_graphics("data_input/Spotify-Logo-PNG.png")
 ```
 
-IMG_Source: https://freebiehive.com/spotify-logo-png/
+IMG_Source: <https://freebiehive.com/spotify-logo-png/>
 
 This dataset contains a comprehensive list of the most famous songs of 2023 as listed on Spotify. The dataset offers a wealth of features beyond what is typically available in similar datasets. It provides insights into each song's attributes, popularity, and presence on various music platforms.
 
 Source: <https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023/data>
 
-## 1.1 Notes on Specific Variables
+## Notes on Specific Variables
 
-track_name: Name of the song
-artist(s)_name: Name of the artist(s) of the song
-artist_count: Number of artists contributing to the song
-released_year: Year when the song was released
-released_month: Month when the song was released
-released_day: Day of the month when the song was released
-in_spotify_playlists: Number of Spotify playlists the song is included in
-in_spotify_charts: Presence and rank of the song on Spotify charts
-streams: Total number of streams on Spotify
+-   `track_name`: Name of the song
+-   `artist(s)_name`: Name of the artist(s) of the song
+-   `artist_count`: Number of artists contributing to the song
+-   `released_year`: Year when the song was released
+-   `released_month`: Month when the song was released
+-   `released_day`: Day of the month when the song was released
+-   `in_spotify_playlists`: Number of Spotify playlists the song is included in
+-   `in_spotify_charts`: Presence and rank of the song on Spotify charts
+-   `streams`: Total number of streams on Spotify
 
 
 
-## 1.2 Objectives
+## Objectives
 
 The objective of this Rmd are to find:
 
@@ -51,13 +51,14 @@ The objective of this Rmd are to find:
 2. The most famous artist on Spotify
 3. The most optimal way to release a song on Spotify to increase stream count
 
-# 2. DATA PREPARATION 
+# Data Preparation
 
 The First step is inserting the csv file into R located in data_input and then installing the necessary plugins.
 
-## 2.1 Importing Libraries
+## Importing Libraries
 
 ```{r}
+# Libraries
 library(dplyr) #install package dplyr to manipulate character data
 library(scales) #install package scales
 library(ggplot2) #install package ggplot2 for data visualization
@@ -66,7 +67,7 @@ library(tidyr) #install package tidyr for seperating rows
 library(stringi) #install package stringi for handling multibyte characters
 ```
 
-## 2.2 Importing Dataset
+## Importing Dataset
 
 ```{r}
 #Read data csv
@@ -79,9 +80,9 @@ Inspecting the imported dataset using head()
 head(spotify)
 ```
 
-# 3. DATA CLEANING
+# Data Cleaning
 
-## 3.1 Checking Datatypes
+## Checking Datatypes
 ```{r}
 str(spotify)
 ```
@@ -96,7 +97,7 @@ From the table, it can be concluded that, on average, songs have only 1 artist, 
 sort(table(spotify$artist_count), decreasing = T)
 ```
 
-## 3.2 Subsetting
+## Subsetting
 
 
 ```{r}
@@ -107,7 +108,7 @@ spotify_sub
 
 
 
-## 3.3 New columns
+## New columns
 
 ```{r}
 # Creating a new column for Month name
@@ -117,7 +118,7 @@ spotify_sub$month <- as.factor(month.abb[spotify_sub$released_month])
 head(spotify_sub)
 ```
 
-## 3.4 Converting column type
+## Converting column type
 
 ```{r}
 spotify_sub <- spotify_sub %>%
@@ -129,7 +130,7 @@ head(spotify_sub)
 
 
 
-## 3.5 Missing Data
+## Missing Data
 ```{r}
 spotify_sub[spotify_sub == ""] <- NA
 str(spotify_sub)
@@ -144,13 +145,13 @@ spotify_sub <- na.omit(spotify_sub)
 ```
 
 
-## 3.6 Duplicates
+## Duplicates
 
 ```{r}
 spotify_sub <- spotify_sub[!duplicated(spotify_sub$track_name, fromLast = TRUE), ]
 ```
 
-## 3.7 Separating Rows
+## Separating Rows
 
 Separating rows of songs who has two or more artists.
 ```{r}
@@ -159,15 +160,17 @@ head(spotify_sep)
 ```
 
 
-#4. DATA PROCESSING
+# Data Processing
 ```{r}
+# Load data set
 spotify_sub
 ```
 
 
-## 4.1 Most played Song in Spotify
+## Most played Song in Spotify
 
 ```{r}
+# Groupping new data set by track_name
 top_spotify <- spotify_sub %>%
   group_by(track_name) %>%
   arrange(-streams) %>%
@@ -193,7 +196,7 @@ ggplot(data = top_spotify, aes(x = streams,
   theme_minimal() +
   theme(legend.position = "none")
 ```
-## 4.2 Top Artist on Spotify
+##  Top Artist on Spotify
 ```{r}
 artist_spotify <- spotify_sep %>%
   group_by(artist.s._name) %>%
@@ -227,7 +230,7 @@ ggplot(data = artist_spotify, aes(x = stream,
 spotify_sub
 ```
 
-## 4.3 Most Optimal Way to Release Songs on Spotify
+## Most Optimal Way to Release Songs on Spotify
 ```{r}
 #Creating a new column to count the number of song released per ROW
 spotify_sub <- spotify_sub %>%
@@ -324,9 +327,9 @@ ggplot(data = month_spotify_comb, aes(x = month, y = avg_stream, fill = avg_stre
 
 
 
-#5. SUMMARY
+# SUMMARY
 
-In 2023, the songs ruling Spotify are "Take Me To Church," "Circles," and "Love Yourself," while the top artists include Bad Bunny, Taylor Swift, and The Weeknd.January stands out as a big month for music, with a flood of new releases and the highest average stream counts. It's a time when both artists and listeners eagerly embrace the year with new music.
+In 2023, the **songs ruling Spotify** are **Take Me To Church**, **Circles**, and **Love Yourself**, while the **top artists** include **Bad Bunny**, **Taylor Swift**, and **The Weeknd**.January stands out as a big month for music, with a flood of new releases and the highest average stream counts. It's a time when both artists and listeners eagerly embrace the year with new music.
 
 
 📌 The most popular songs on Spotify in 2023 are: "Take Me To Church," "Circles," and "Love Yourself."
